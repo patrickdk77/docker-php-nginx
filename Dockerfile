@@ -1,7 +1,16 @@
-FROM alpine:3.11
+ARG BUILD_FROM=alpine:3.11
+ARG BUILD_FROM_PREFIX
+FROM ${BUILD_FROM_PREFIX}${BUILD_FROM}
 LABEL Maintainer="Patrick Domack" \
       ForkedFrom="Tim de Pater <code@trafex.nl>" \
-      Description="Lightweight container with Nginx 1.16 & PHP-FPM 7.3 based on Alpine Linux."
+      Description="Lightweight container with Nginx & PHP-FPM based on Alpine Linux."
+
+ARG ARCH
+ARG QEMU_ARCH
+ARG BUILD_DATE
+ARG VCS_REF
+ARG BUILD_VERSION
+COPY .gitignore qemu-${QEMU_ARCH}-static* /usr/bin/
 
 # Install packages
 RUN apk --no-cache add php7 php7-fpm php7-mysqli php7-json php7-openssl php7-curl \
