@@ -1,15 +1,9 @@
 ARG BUILD_FROM=alpine:3.11
 ARG BUILD_FROM_PREFIX
 FROM ${BUILD_FROM_PREFIX}${BUILD_FROM}
-LABEL Maintainer="Patrick Domack" \
-      ForkedFrom="Tim de Pater <code@trafex.nl>" \
-      Description="Lightweight container with Nginx & PHP-FPM based on Alpine Linux."
 
-ARG ARCH
+ARG BUILD_ARCH
 ARG QEMU_ARCH
-ARG BUILD_DATE
-ARG VCS_REF
-ARG BUILD_VERSION
 COPY .gitignore qemu-${QEMU_ARCH}-static* /usr/bin/
 
 # Install packages
@@ -42,3 +36,20 @@ CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
 # Configure a healthcheck to validate that everything is up&running
 #HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:80/fpm-ping
+
+ARG BUILD_DATE
+ARG BUILD_REF
+ARG BUILD_VERSION
+
+LABEL maintainer="Patrick Domack (patrickdk@patrickdk.com)" \
+  ForkedFrom="Tim de Pater <code@trafex.nl>" \
+  Description="Lightweight container with Nginx & PHP-FPM based on Alpine Linux." \
+  org.label-schema.schema-version="1.0" \
+  org.label-schema.build-date="${BUILD_DATE}" \
+  org.label-schema.name="nginx-php-alpine-base" \
+  org.label-schema.description="Nginx PHP alpine base image" \
+  org.label-schema.url="https://github.com/patrickdk77/docker-php-nginx/" \
+  org.label-schema.usage="https://github.com/patrickdk77/docker-php-nginx/tree/master/README.md" \
+  org.label-schema.vcs-url="https://github.com/patrickdk77/docker-php-nginx" \
+  org.label-schema.vcs-ref="${BUILD_REF}" \
+  org.label-schema.version="${BUILD_VERSION}"
