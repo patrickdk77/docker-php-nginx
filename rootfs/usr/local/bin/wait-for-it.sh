@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 #   Use this script to test if a given TCP host/port are available
 
-set -e
+#set -e
 
 cmdname=$(basename "$0")
 
@@ -55,7 +55,7 @@ wait_for_wrapper()
 {
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
     if [ "$QUIET" -eq 1 ]; then
-        timeout "$TIMEOUT" "$0" -q -child "$HOST":"$PORT" -t "$TIMEOUT" &
+        timeout "$TIMEOUT" "$0" -q --child "$HOST":"$PORT" -t "$TIMEOUT" &
     else
         timeout "$TIMEOUT" "$0" --child "$HOST":"$PORT" -t "$TIMEOUT" &
     fi

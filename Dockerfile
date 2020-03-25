@@ -20,7 +20,7 @@ RUN rm /etc/nginx/conf.d/default.conf \
  && chown -R www-data.www-data /var/www/html \
  && mkdir -p /var/tmp/nginx \
  && chown -R www-data.www-data /var/tmp/nginx \
- && chown -R www-data /var/www/html
+ && chmod a+x /usr/local/bin/*
 
 # Make the document root a volume
 VOLUME /var/www/html
