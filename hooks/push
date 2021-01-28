@@ -12,13 +12,13 @@ BUILD_IMAGE="${IMAGE_NAME//index.docker.io\/}"
 BUILD_REPO="${DOCKER_REPO//index.docker.io\/}"
 
 for arch in ${verified_build_architectures[@]}; do
-  echo "✅ Pushing ${BUILD_NIMAGE-${arch}"
+  echo "✅ Pushing ${BUILD_IMAGE}-${arch}"
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
   echo
   docker push ${BUILD_IMAGE}-${arch}
 done
 
-#docker image ls
+docker image ls
 
 # 2. build and push manifest
 manifests=""
@@ -57,10 +57,10 @@ for tag in "${tagparts[@]}"; do
       fi
   done
 
-  echo "✅ Inspecting manifest ${BUILD_NAME}-${arch}"
-  echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
-  docker manifest inspect ${BUILD_NAME}-${arch}
-  echo
+#  echo "✅ Inspecting manifest ${BUILD_NAME}-${arch}"
+#  echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+#  docker manifest inspect ${BUILD_NAME}-${arch}
+#  echo
 
   echo "✅ Pushing manifest ${BUILD_NAME}"
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"

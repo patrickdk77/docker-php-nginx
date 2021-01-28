@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -eu
-set
 
 echo "🔵 post_checkout"
 source hooks/.config
