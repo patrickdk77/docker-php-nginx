@@ -7,11 +7,11 @@ ARG QEMU_ARCH
 COPY .gitignore qemu-${QEMU_ARCH}-static* /usr/bin/
 
 # Install packages
-RUN addgroup -g 82 -S www-data ; \
-  adduser -u 82 -D -S -G www-data www-data; \
-  apk --no-cache add php7 php7-fpm php7-mysqli php7-json php7-openssl php7-curl \
+RUN addgroup -g 82 -S www-data \
+ && adduser -u 82 -D -S -G www-data www-data \
+ && apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-json php7-openssl php7-curl \
     php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session \
-    php7-mbstring php7-sqlite3 php7-pdo_mysql php7-pdo_sqlite php7-opcache nginx supervisor curl
+    php7-mbstring php7-sqlite3 php7-pdo_mysql php7-pdo_sqlite nginx supervisor curl
 
 COPY rootfs/ /
 
@@ -21,9 +21,6 @@ RUN rm /etc/nginx/conf.d/default.conf \
  && mkdir -p /var/tmp/nginx \
  && chown -R www-data.www-data /var/tmp/nginx \
  && chmod a+x /usr/local/bin/*
-
-# Make the document root a volume
-VOLUME /var/www/html
 
 # Add application
 WORKDIR /var/www/html
