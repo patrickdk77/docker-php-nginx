@@ -24,6 +24,11 @@ http {
     fastcgi_read_timeout ${NGINX_PROXY_TIMEOUT};
     proxy_read_timeout ${NGINX_PROXY_TIMEOUT};
 
+    client_max_body_size ${NGINX_CLIENT_MAX_BODY_SIZE};
+    sendfile ${NGINX_SENDFILE};
+    tcp_nodelay ${NGINX_TCP_NODELAY};
+    tcp_nopush ${NGINX_TCP_NOPUSH};
+
     # Write temporary files to /tmp so they can be created as a non-privileged user
     client_body_temp_path /tmp/client_temp;
     proxy_temp_path /tmp/proxy_temp_path;
@@ -37,8 +42,6 @@ http {
     server {
         listen 80 default_server;
         server_name _;
-
-        sendfile off;
 
         root /var/www/html;
         index index.php index.html;
@@ -67,21 +70,28 @@ http {
             include fastcgi_params;
         }
 
-        location ~* \.(css|js)$ {
-            expires 1h;
-            log_not_found off;
-            access_log off;
+        location ~* \.css$ {
+            expires ${NGINX_EXPIRES_CSS};
+            log_not_found ${NGINX_LOG_NOTFOUND_CSS};
+            access_log ${NGINX_LOG_ACCESS_CSS};
+        }
+
+        location ~* \.js$ {
+            expires ${NGINX_EXPIRES_JS};
+            log_not_found ${NGINX_LOG_NOTFOUND_JS};
+            access_log ${NGINX_LOG_ACCESS_CSS};
         }
 
         location ~* \.(jpg|jpeg|gif|png|ico)$ {
-            expires 1d;
-            log_not_found off;
-            access_log off;
+            expires ${NGINX_EXPIRES_IMAGES};
+            log_not_found ${NGINX_LOG_NOTFOUND_IMAGES};
+            access_log ${NGINX_LOG_ACCESS_IMAGES};
         }
 
         # Deny access to . files, for security
         location ~ /\. {
-            log_not_found off;
+            log_not_found ${NGINX_LOG_NOTFOUND_DOT};
+            access_log ${NGINX_LOG_ACCESS_DOT};
             deny all;
         }
 
@@ -97,10 +107,11 @@ http {
         }
     }
     
-    gzip on;
-    gzip_proxied any;
-    gzip_types text/plain application/xml text/css text/js text/xml application/x-javascript text/javascript application/json application/xml+rss;
-    gzip_vary on;
+    gzip ${NGINX_GZIP};
+    gzip_static ${NGINX_GZIP_STATIC};
+    gzip_proxied ${NGINX_GZIP_PROXIED};
+    gzip_types ${NGINX_GZIP_TYPES};
+    gzip_vary ${NGINX_GZIP_VARY};
     gzip_disable "msie6";
     
     # Include other server configs

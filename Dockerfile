@@ -15,7 +15,7 @@ RUN addgroup -g 82 -S www-data \
 
 COPY rootfs/ /
 
-RUN rm /etc/nginx/conf.d/default.conf \
+RUN rm /etc/nginx/conf.d/default.conf /etc/nginx/nginx.conf \
  && mkdir -p /var/www/html \
  && chown -R www-data.www-data /var/www/html \
  && mkdir -p /var/tmp/nginx \
