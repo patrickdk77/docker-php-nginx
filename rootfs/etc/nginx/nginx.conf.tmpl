@@ -1,10 +1,10 @@
-worker_processes 1;
+worker_processes ${NGINX_WORKER_PROCESSES};
 error_log stderr warn;
 pid /run/nginx.pid;
 user www-data www-data;
 
 events {
-    worker_connections 200;
+    worker_connections ${NGINX_WORKER_CONNECTIONS};
 }
 
 http {
@@ -20,9 +20,9 @@ http {
     access_log /dev/stdout main_timed;
     error_log /dev/stderr notice;
 
-    keepalive_timeout 65;
-    fastcgi_read_timeout 2000;
-    proxy_read_timeout 2000;
+    keepalive_timeout ${NGINX_KEEPALIVE_TIMEOUT};
+    fastcgi_read_timeout ${NGINX_PROXY_TIMEOUT};
+    proxy_read_timeout ${NGINX_PROXY_TIMEOUT};
 
     # Write temporary files to /tmp so they can be created as a non-privileged user
     client_body_temp_path /tmp/client_temp;
@@ -55,15 +55,15 @@ http {
             root /var/lib/nginx/html;
         }
 
-        # Pass the PHP scripts to PHP-FPM listening on 127.0.0.1:9000
+        # Pass the PHP scripts to PHP-FPM listening on localhost:9000
         location ~ \.php$ {
             try_files $uri =404;
             fastcgi_split_path_info ^(.+\.php)(/.+)$;
-            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_pass localhost:9000;
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
             fastcgi_param SCRIPT_NAME $fastcgi_script_name;
             fastcgi_index index.php;
-            fastcgi_read_timeout 2000;
+            fastcgi_read_timeout ${NGINX_PROXY_TIMEOUT};
             include fastcgi_params;
         }
 
@@ -89,10 +89,11 @@ http {
         location ~ ^/(fpm-status|fpm-ping)$ {
             access_log off;
             allow 127.0.0.1;
+            allow ::1;
             deny all;
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
             include fastcgi_params;
-            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_pass localhost:9000;
         }
     }
     
