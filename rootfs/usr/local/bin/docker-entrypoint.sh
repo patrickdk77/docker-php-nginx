@@ -43,7 +43,7 @@ if [ ! -e /etc/nginx/nginx.conf ]; then
 
   if [ ! -z $TZ ]; then
     sed -i "s|UTC|${TZ}|" /etc/php7/conf.d/custom.ini
-    if [ ! -e /etc/localtime ];
+    if [ ! -e /etc/localtime ]; then
       cp /usr/share/zoneinfo/${TZ} /etc/localtime
     fi
     echo "${TZ}" > /etc/timezone
