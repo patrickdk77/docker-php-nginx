@@ -36,6 +36,13 @@ http {
     uwsgi_temp_path /tmp/uwsgi_temp;
     scgi_temp_path /tmp/scgi_temp;
 
+    proxy_set_header Proxy "";
+    map $http_x_forwarded_proto $is_https {
+        default "";
+        https on;
+    }
+    proxy_set_header HTTPS $is_https;
+
     server_tokens off;
 
     # Default server definition
@@ -44,12 +51,15 @@ http {
         server_name _;
 
         root /var/www/html;
-        index index.php index.html;
+        index index.php index.html index.htm;
+
+        include vhost/server;
 
         location / {
             # First attempt to serve request as file, then
             # as directory, then fall back to index.php
             try_files $uri $uri/ /index.php?q=$uri&$args;
+            include vhost/server_location;
         }
 
         # Redirect server error pages to the static page /50x.html
@@ -59,40 +69,17 @@ http {
         }
 
         # Pass the PHP scripts to PHP-FPM listening on localhost:9000
-        location ~ \.php$ {
+        location ~ [^/]\.php(/|$) {
             try_files $uri =404;
-            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_split_path_info ^(.+?\.php)(/.*)$;
             fastcgi_pass localhost:9000;
+            include fastcgi_params;
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
             fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+            fastcgi_param REMOTE_ADDR $http_x_real_ip;
+            fastcgi_param HTTPS $is_https;
             fastcgi_index index.php;
             fastcgi_read_timeout ${NGINX_PROXY_TIMEOUT};
-            include fastcgi_params;
-        }
-
-        location ~* \.css$ {
-            expires ${NGINX_EXPIRES_CSS};
-            log_not_found ${NGINX_LOG_NOTFOUND_CSS};
-            access_log ${NGINX_LOG_ACCESS_CSS};
-        }
-
-        location ~* \.js$ {
-            expires ${NGINX_EXPIRES_JS};
-            log_not_found ${NGINX_LOG_NOTFOUND_JS};
-            access_log ${NGINX_LOG_ACCESS_CSS};
-        }
-
-        location ~* \.(jpg|jpeg|gif|png|ico)$ {
-            expires ${NGINX_EXPIRES_IMAGES};
-            log_not_found ${NGINX_LOG_NOTFOUND_IMAGES};
-            access_log ${NGINX_LOG_ACCESS_IMAGES};
-        }
-
-        # Deny access to . files, for security
-        location ~ /\. {
-            log_not_found ${NGINX_LOG_NOTFOUND_DOT};
-            access_log ${NGINX_LOG_ACCESS_DOT};
-            deny all;
         }
 
         # Allow fpm ping and status from localhost

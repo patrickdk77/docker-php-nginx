@@ -1,4 +1,5 @@
 ARG BUILD_FROM=alpine:3.12
+#ARG BUILD_FROM=alpine:3.9
 ARG BUILD_FROM_PREFIX
 FROM ${BUILD_FROM_PREFIX}${BUILD_FROM}
 
@@ -10,8 +11,14 @@ COPY .gitignore qemu-${QEMU_ARCH}-static* /usr/bin/
 RUN addgroup -g 82 -S www-data \
  && adduser -u 82 -D -S -G www-data www-data \
  && apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-json php7-openssl php7-curl \
-    php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session \
-    php7-mbstring php7-sqlite3 php7-pdo_mysql php7-pdo_sqlite nginx supervisor curl gettext bash
+    php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session php7-phar \
+    php7-ftp php7-mcrypt php7-xmlrpc php7-exif php7-tidy php7-mbstring php7-sqlite3 php7-iconv \
+    php7-pdo_mysql php7-pdo_sqlite php7-xmlwriter php7-simplexml php7-gmp php7-ctype php7-apcu \
+    php7-bcmath php7-dom gmp-dev freetype-dev libjpeg-turbo-dev zip unzip sed \
+    nginx supervisor ca-certificates libmcrypt-dev zlib-dev gmp-dev libpng-dev curl gettext bash \
+ && rm -rf /var/cache/apk/* \
+ && sed -i -e 's/expose_php = On/expose_php = Off/g' -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini \
+ && echo ""
 
 COPY rootfs/ /
 

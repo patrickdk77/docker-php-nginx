@@ -53,11 +53,16 @@ wait_for()
 
 wait_for_wrapper()
 {
+    TIMEOUT_PARAM=""
+    timeout 2>&1 | grep v1.2
+    if [ "$?" -eq 0 ]; then
+      TIMEOUT_PARAM="-t" 
+    fi
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
     if [ "$QUIET" -eq 1 ]; then
-        timeout "$TIMEOUT" "$0" -q --child "$HOST":"$PORT" -t "$TIMEOUT" &
+        timeout $TIMEOUT_PARAM "$TIMEOUT" "$0" -q --child "$HOST":"$PORT" -t "$TIMEOUT" &
     else
-        timeout "$TIMEOUT" "$0" --child "$HOST":"$PORT" -t "$TIMEOUT" &
+        timeout $TIMEOUT_PARAM "$TIMEOUT" "$0" --child "$HOST":"$PORT" -t "$TIMEOUT" &
     fi
     PID=$!
     trap 'kill -INT -$PID' INT
