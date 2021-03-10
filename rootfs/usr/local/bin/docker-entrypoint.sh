@@ -12,19 +12,21 @@ set -a
   "${NGINX_GZIP_TYPES:=text/plain application/xml text/css text/js text/xml application/x-javascript text/javascript application/json application/xml+rss}" \
   "${NGINX_SENDFILE:=on}" \
   "${NGINX_CLIENT_MAX_BODY_SIZE:=1m}" \
+  "${NGINX_CLIENT_BODY_BUFFER_SIZE:=256k}" \
   "${NGINX_TCP_NODELAY:=off}" \
   "${NGINX_TCP_NOPUSH:=off}" \
+
 
 if [ ! -e /etc/nginx/nginx.conf ]; then
   ENABLE_IPV4=0
   ENABLE_IPV6=0
 
-  ping -4 -c 1 localhost
+  ping -4 -c 1 -q localhost
   if [ $? -eq 0 ]; then
     ENABLE_IPV4=1
   fi
 
-  ping -6 -c 1 localhost
+  ping -6 -c 1 -q localhost
   if [ $? -eq 0 ]; then
     ENABLE_IPV6=1
   fi

@@ -25,6 +25,7 @@ http {
     proxy_read_timeout ${NGINX_PROXY_TIMEOUT};
 
     client_max_body_size ${NGINX_CLIENT_MAX_BODY_SIZE};
+    client_body_buffer_size ${NGINX_CLIENT_BODY_BUFFER_SIZE};
     sendfile ${NGINX_SENDFILE};
     tcp_nodelay ${NGINX_TCP_NODELAY};
     tcp_nopush ${NGINX_TCP_NOPUSH};
