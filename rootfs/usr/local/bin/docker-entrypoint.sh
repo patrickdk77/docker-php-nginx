@@ -16,7 +16,6 @@ set -a
   "${NGINX_TCP_NODELAY:=off}" \
   "${NGINX_TCP_NOPUSH:=off}" \
 
-
 if [ ! -e /etc/nginx/nginx.conf ]; then
   ENABLE_IPV4=0
   ENABLE_IPV6=0
@@ -41,6 +40,15 @@ if [ ! -e /etc/nginx/nginx.conf ]; then
   fi
 
   envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < /etc/nginx/nginx.conf.tmpl > /etc/nginx/nginx.conf
+
+  if [ ! -z $TZ ]; then
+    sed -i "s|UTC|${TZ}|" /etc/php7/conf.d/custom.ini
+    if [ ! -e /etc/localtime ];
+      cp /usr/share/zoneinfo/${TZ} /etc/localtime
+    fi
+    echo "${TZ}" > /etc/timezone
+  fi
+
 fi
 
 exec "$@"

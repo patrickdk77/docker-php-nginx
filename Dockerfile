@@ -15,7 +15,7 @@ RUN addgroup -g 82 -S www-data \
     php7-ftp php7-mcrypt php7-pecl-mcrypt php7-xmlrpc php7-exif php7-tidy php7-mbstring php7-sqlite3 \
     php7-iconv php7-pdo_mysql php7-pdo_sqlite php7-xmlwriter php7-simplexml php7-gmp php7-ctype php7-apcu \
     php7-bcmath php7-pecl-lzf php7-gettext php-gd gmp-dev freetype-dev libjpeg-turbo-dev zip unzip sed \
-    nginx supervisor ca-certificates libmcrypt-dev zlib-dev gmp-dev libpng-dev curl gettext bash \
+    nginx supervisor ca-certificates libmcrypt-dev zlib-dev gmp-dev libpng-dev curl gettext bash tzdata \
  && rm -rf /var/cache/apk/* \
  && sed -i -e 's/expose_php = On/expose_php = Off/g' -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini \
  && echo ""
