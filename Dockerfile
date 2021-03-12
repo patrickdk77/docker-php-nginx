@@ -8,6 +8,7 @@ ARG QEMU_ARCH
 COPY .gitignore qemu-${QEMU_ARCH}-static* /usr/bin/
 
 # Install packages
+ARG BUILD_FROM
 RUN addgroup -g 82 -S www-data \
  && adduser -u 82 -D -S -G www-data www-data \
  && apk --no-cache add php7 php7-fpm php7-opcache php7-mysqli php7-json php7-openssl php7-curl \
@@ -16,6 +17,10 @@ RUN addgroup -g 82 -S www-data \
     php7-iconv php7-pdo_mysql php7-pdo_sqlite php7-xmlwriter php7-simplexml php7-gmp php7-apcu \
     php7-bcmath php7-pecl-lzf php7-gettext php7-gd zip unzip sed \
     nginx supervisor ca-certificates curl gettext bash tzdata \
+ && if [ $(echo ${BUILD_FROM} | cut -d . -f2) -gt 9 ]; then \
+      apk --no-cache add php7-brotli \
+ &&   printf '\nbrotli.output_compression=1\nbrotli.output_compression_level=5\n' >> /etc/php7/conf.d/brotli.ini; \
+    fi \
  && rm -rf /var/cache/apk/* \
  && sed -i -e 's/expose_php = On/expose_php = Off/g' -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini \
  && echo ""
