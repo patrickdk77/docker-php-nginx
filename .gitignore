@@ -1,0 +1,7 @@
+*~
+docker/
+qemu-*-static
+deploy.env
+*.swp
+core.*
+
