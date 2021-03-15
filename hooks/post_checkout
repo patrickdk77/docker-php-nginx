@@ -26,6 +26,8 @@ if [ -e ~/.docker/config.json ]; then
   if [ $(grep experimental.*enabled ~/.docker/config.json) ]; then
     NEED_EXPERIMENTAL=1
   fi
+else
+  NEED_EXPERIMENTAL=1
 fi
 
 if [ ${NEED_EXPERIMENTAL} -gt 0 ]; then
