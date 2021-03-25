@@ -49,6 +49,8 @@ if [ ! -e /etc/nginx/nginx.conf ]; then
     echo "${TZ}" > /etc/timezone
   fi
 
+  for e in ${!SSMTP_*} ; do echo "${e:6}=${!e}" >> /etc/ssmtp/ssmtp.conf ; done
+
 fi
 
 exec "$@"

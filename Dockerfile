@@ -16,13 +16,15 @@ RUN addgroup -g 82 -S www-data \
     php7-ftp php7-mcrypt php7-xmlrpc php7-exif php7-tidy php7-mbstring php7-sqlite3 \
     php7-iconv php7-pdo_mysql php7-pdo_sqlite php7-xmlwriter php7-simplexml php7-gmp php7-apcu \
     php7-bcmath php7-pecl-lzf php7-gettext php7-gd zip unzip sed \
-    nginx supervisor ca-certificates curl gettext bash tzdata \
+    nginx supervisor ca-certificates curl gettext bash tzdata ssmtp mailx \
  && if [ $(echo ${BUILD_FROM} | cut -d . -f2) -gt 9 ]; then \
       apk --no-cache add php7-brotli \
  &&   printf '\nbrotli.output_compression=1\nbrotli.output_compression_level=5\n' >> /etc/php7/conf.d/brotli.ini; \
     fi \
  && rm -rf /var/cache/apk/* \
  && sed -i -e 's/expose_php = On/expose_php = Off/g' -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini \
+ && sed -i 's|^root|#root|' /etc/ssmtp/ssmtp.conf \
+ && ln -s /usr/sbin/ssmtp /usr/lib/sendmail \
  && echo ""
 
 COPY rootfs/ /
