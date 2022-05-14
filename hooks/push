@@ -64,7 +64,7 @@ for tag in "${tagparts[@]}"; do
 
   echo "✅ Pushing manifest ${BUILD_NAME}"
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
-  docker manifest push --purge "${BUILD_NAME}"
+  docker manifest push "${BUILD_NAME}"
   echo
 done
 

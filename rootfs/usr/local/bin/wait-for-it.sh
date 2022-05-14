@@ -60,9 +60,9 @@ wait_for_wrapper()
     fi
     # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
     if [ "$QUIET" -eq 1 ]; then
-        timeout $TIMEOUT_PARAM "$TIMEOUT" "$0" -q --child "$HOST":"$PORT" -t "$TIMEOUT" &
+        timeout $TIMEOUT_PARAM "$TIMEOUT" "$0" -q --child -h "$HOST" -p "$PORT" -t "$TIMEOUT" &
     else
-        timeout $TIMEOUT_PARAM "$TIMEOUT" "$0" --child "$HOST":"$PORT" -t "$TIMEOUT" &
+        timeout $TIMEOUT_PARAM "$TIMEOUT" "$0" --child -h "$HOST" -p "$PORT" -t "$TIMEOUT" &
     fi
     PID=$!
     trap 'kill -INT -$PID' INT
@@ -83,8 +83,8 @@ while [ $# -gt 0 ]
 do
     case "$1" in
         *:* )
-        HOST=$(printf "%s\n" "$1"| cut -d : -f 1)
-        PORT=$(printf "%s\n" "$1"| cut -d : -f 2)
+        PORT="${1##*:}"
+        HOST="${1%:$PORT}"
         shift 1
         ;;
         --child)
@@ -105,7 +105,7 @@ do
         shift 2
         ;;
         --host=*)
-        HOST=$(printf "%s" "$1" | cut -d = -f 2)
+        HOST="${1#*=}"
         shift 1
         ;;
         -p)

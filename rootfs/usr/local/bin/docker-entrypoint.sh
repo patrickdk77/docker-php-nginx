@@ -32,17 +32,26 @@ if [ ! -e /etc/nginx/nginx.conf ]; then
 
   cat /etc/hosts > /etc/hosts.orig
   if [ $ENABLE_IPV4 -eq 1 ]; then
+    echo "Found IPv4"
     sed -e '/^::.*localhost/d' /etc/hosts.orig > /etc/hosts
   else
     if [ $ENABLE_IPV6 -eq 1 ]; then
+      echo "Found IPv6"
       sed -e '/^127.*localhost/d' /etc/hosts.orig > /etc/hosts
+    else
+      echo "Found None"
     fi
   fi
 
   envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < /etc/nginx/nginx.conf.tmpl > /etc/nginx/nginx.conf
 
   if [ ! -z $TZ ]; then
-    sed -i "s|UTC|${TZ}|" /etc/php7/conf.d/custom.ini
+    if [ -e /etc/php7 ]; then
+       sed -i "s|UTC|${TZ}|" /etc/php7/conf.d/custom.ini
+    fi
+    if [ -e /etc/php8 ]; then
+       sed -i "s|UTC|${TZ}|" /etc/php8/conf.d/custom.ini
+    fi
     if [ ! -e /etc/localtime ]; then
       cp /usr/share/zoneinfo/${TZ} /etc/localtime
     fi
@@ -51,6 +60,8 @@ if [ ! -e /etc/nginx/nginx.conf ]; then
 
   for e in ${!SSMTP_*} ; do echo "${e:6}=${!e}" >> /etc/ssmtp/ssmtp.conf ; done
 
+else
+  echo "nginx.conf exists"
 fi
 
 exec "$@"
