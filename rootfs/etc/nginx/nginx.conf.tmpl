@@ -56,6 +56,17 @@ http {
 
         include vhost/server;
 
+        # Allow fpm ping and status from localhost
+        location ~ ^/fpm-(status|ping)$ {
+            access_log off;
+            allow 127.0.0.1;
+            allow ::1;
+            deny all;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            include fastcgi_params;
+            fastcgi_pass localhost:9000;
+        }
+
         location / {
             # First attempt to serve request as file, then
             # as directory, then fall back to index.php
@@ -83,16 +94,6 @@ http {
             fastcgi_read_timeout ${NGINX_PROXY_TIMEOUT};
         }
 
-        # Allow fpm ping and status from localhost
-        location ~ ^/(fpm-status|fpm-ping)$ {
-            access_log off;
-            allow 127.0.0.1;
-            allow ::1;
-            deny all;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            include fastcgi_params;
-            fastcgi_pass localhost:9000;
-        }
     }
     
     gzip ${NGINX_GZIP};
